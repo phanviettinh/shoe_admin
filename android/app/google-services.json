@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "257970270681",
+    "project_id": "shopshoe-8ef20",
+    "storage_bucket": "shopshoe-8ef20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257970270681:android:a296c08b193b9ab38069c8",
+        "android_client_info": {
+          "package_name": "com.example.shoe_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257970270681-3cgjufl709s28op2b3mu3ve829tim6vl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnAa3Qu08byT43YwFLWKgfSykuPlhWi-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257970270681-3cgjufl709s28op2b3mu3ve829tim6vl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "257970270681-5e3efkg7k710qjn66alk267kc8vv3agm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sportsShoeStore.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257970270681:android:48e2acca52bdc2808069c8",
+        "android_client_info": {
+          "package_name": "com.example.sports_shoe_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257970270681-2l8omo8olmkj4gkb027u8jarrb3mj393.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sports_shoe_store",
+            "certificate_hash": "806263f416cbd9cec922343287df035e338b492a"
+          }
+        },
+        {
+          "client_id": "257970270681-3cgjufl709s28op2b3mu3ve829tim6vl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnAa3Qu08byT43YwFLWKgfSykuPlhWi-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257970270681-3cgjufl709s28op2b3mu3ve829tim6vl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "257970270681-5e3efkg7k710qjn66alk267kc8vv3agm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sportsShoeStore.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
