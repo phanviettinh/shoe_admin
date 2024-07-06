@@ -51,12 +51,44 @@ class OrderController extends GetxController {
   RxString selectedDateRange = 'all'.obs;
   var receivedOrders = <OrderModel>[].obs;
   var totalProfitByDate = <DateTime, double>{}.obs;
+  late final UserModel user;
+
+  var newOrdersCount = 0.obs; // Biến để theo dõi số lượng đơn hàng mới
+  var hasNewOrder = false.obs; // Biến để kiểm tra có đơn hàng mới hay không
+  var newOrders = <OrderModel>[].obs; // Danh sách các đơn hàng mới
 
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchAllUserOrders();
+    fetchNewOrders();
+
+  }
+  // Hàm để cập nhật trạng thái thông báo đơn hàng mới
+  void setNewOrderNotification(bool value) {
+    hasNewOrder.value = value;
+  }
+  // Phương thức để cập nhật danh sách đơn hàng mới
+  void updateNewOrders(List<OrderModel> orders) {
+    newOrders.assignAll(orders);
+  }
+  // Phương thức để tải các đơn hàng mới từ nguồn dữ liệu (ví dụ như API)
+  Future<void> fetchNewOrders() async {
+    try {
+      // Giả sử bạn có phương thức để lấy các đơn hàng mới từ API
+      final orders = await OrderRepository().fetchUserOrdersAdmin(user.id);
+      updateNewOrders(orders);
+    } catch (e) {
+      print('Error in fetchNewOrders: $e');
+    }
+  }
+
+  ///
   void updateDateRange() {
     switch (selectedDateRange.value) {
       case 'all':
-        startDate.value = DateTime.now().subtract(const Duration(days: 7));
+        startDate.value = DateTime.now().subtract(const Duration(days: 1000));
         endDate.value = DateTime.now();
         break;
       case 'today':
@@ -133,12 +165,7 @@ class OrderController extends GetxController {
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchAllUserOrders();
 
-  }
 
   /// Listen to category data changes
   void listenToCategories() {

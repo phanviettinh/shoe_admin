@@ -27,37 +27,35 @@ class ShowProductAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
-
-    final controller =   Get.put(AllProductController());
+    final controller = Get.put(AllProductController());
 
     return Scaffold(
       backgroundColor: dark ? TColors.black : TColors.light,
-
       appBar: TAppbar(
-        title: Text(title),
-        showBackArrow: true,
+          title: Text(title),
+          showBackArrow: true,
           actions: [
-            TCircularIcon(icon: Iconsax.add,onPressed: () => Get.to(() =>  const AddProducts()))
+            TCircularIcon(icon: Iconsax.add, onPressed: () => Get.to(() => const AddProducts()))
           ]
       ),
-      body:  Expanded(
-          child: FutureBuilder(
-                future: futureMethod ?? controller.fetchProductByQuery(query),
-                builder: (context, snapshot) {
+      body: Column( // Thêm Column bao quanh Expanded
+        children: [
+          Expanded(
+            child: FutureBuilder(
+              future: futureMethod ?? controller.fetchProductByQuery(query),
+              builder: (context, snapshot) {
+                const loader = TVerticalProductShimmer();
+                final widget = TCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot, loader: loader);
+                if (widget != null) return widget;
 
-                  const loader = TVerticalProductShimmer();
-                  final widget = TCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot,loader: loader);
-
-                  if(widget != null) return widget;
-
-                  //product found
-                  final products = snapshot.data!;
-
-                  return  TSortableProductAdmin(products: products,);
-                }),
+                // Products found
+                final products = snapshot.data!;
+                return TSortableProductAdmin(products: products);
+              },
+            ),
           ),
-
-
+        ],
+      ),
     );
   }
 }
