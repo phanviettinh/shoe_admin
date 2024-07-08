@@ -27,163 +27,162 @@ class OrderAdmin extends StatelessWidget {
     final orderController = Get.put(OrderController());
 
     orderController.fetchAllUserOrders();
-    return  Scaffold(
-          appBar: const TAppbar(
-            title: Text('Orders'),
-            showBackArrow: true,
+
+    return DefaultTabController(
+      length: orderController.orderStatusOptionsIsStatus.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Orders'),
+          leading: IconButton(
+            icon:   Icon(Icons.arrow_back, color: dark ? TColors.white : TColors.black),
+            onPressed: () {
+              // Quay lại màn hình trước đó
+              Navigator.of(context).pop();
+            },
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                // Searchbar
-                TextField(
-                  controller: orderController.searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search by name',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+          bottom: TabBar(
+            isScrollable: true,
+            onTap: (index) {
+              orderController.filterOrdersByStatus(
+                orderController.orderStatusOptionsIsStatus[index],
+              );
+            },
+            tabs: orderController.orderStatusOptionsIsStatus
+                .map((status) => Tab(text: status))
+                .toList(),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              // Searchbar
+              TextField(
+                controller: orderController.searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search by name',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  onChanged: (value) {
-                    orderController.filterOrders(value);
-                  },
                 ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: Obx(() {
-                    if (orderController.filteredOrders.isEmpty) {
-                      return const Center(child: Text('No Data Found!'));
-                    }
+                onChanged: (value) {
+                  orderController.filterOrders(value);
+                },
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Obx(() {
+                  if (orderController.filteredOrders.isEmpty) {
+                    return const Center(child: Text('No Data Found!'));
+                  }
 
-                    return ListView.builder(
-                      itemCount: orderController.filteredOrders.length,
-                      itemBuilder: (context, index) {
-                        final order = orderController.filteredOrders[index];
-                        final user = orderController.getUserById(order.userId);
+                  return ListView.builder(
+                    itemCount: orderController.filteredOrders.length,
+                    itemBuilder: (context, index) {
+                      final order = orderController.filteredOrders[index];
+                      final user = orderController.getUserById(order.userId);
 
-                        return Slidable(
-                          key: ValueKey(order.id),
-                          endActionPane: ActionPane(
-                            motion: const ScrollMotion(),
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) async {
-                                  // Xác nhận xóa
-                                  final confirmed = await showDialog<bool>(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: const Text('Confirm Deletion'),
-                                      content: const Text(
-                                          'Are you sure you want to delete this order?'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(false),
-                                          child: const Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(true),
-                                          child: const Text('Delete'),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                      return Slidable(
+                        key: ValueKey(order.id),
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) async {
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Confirm Deletion'),
+                                    content: const Text(
+                                        'Are you sure you want to delete this order?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  ),
+                                );
 
-                                  if (confirmed == true) {
-                                    await orderController.deleteOrder(user!.id,  order.id);
-                                  }
-                                },
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                icon: Icons.delete,
-                                label: 'Delete',
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.all(TSizes.spaceBtwItems / 2),
-                            child: GestureDetector(
-                              onTap: () => Get.to(() =>
-                                  OrderDetailAdmin(order: order, user: user!)),
-                              child: TRoundedContainer(
-                                showBorder: true,
-                                backgroundColor:
-                                    dark ? TColors.dark : TColors.light,
-                                padding: const EdgeInsets.all(TSizes.md),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // id orders
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(order.id,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium),
-                                        const Spacer(),
-                                        Text(
-                                          order.formattedOrderDate,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
+                                if (confirmed == true) {
+                                  await orderController.deleteOrder(user!.id, order.id);
+                                }
+                              },
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'Delete',
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(TSizes.spaceBtwItems / 2),
+                          child: GestureDetector(
+                            onTap: () => Get.to(() => OrderDetailAdmin(order: order, user: user!)),
+                            child: TRoundedContainer(
+                              showBorder: true,
+                              backgroundColor: dark ? TColors.dark : TColors.light,
+                              padding: const EdgeInsets.all(TSizes.md),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(order.id, style: Theme.of(context).textTheme.titleMedium),
+                                      const Spacer(),
+                                      Text(
+                                        order.formattedOrderDate,
+                                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: TSizes.spaceBtwItems),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        order.orderStatusText,
+                                        style: Theme.of(context).textTheme.bodyLarge!.apply(
+                                          color: order.orderStatusText == 'Processing'
+                                              ? TColors.primaryColor
+                                              : order.orderStatusText == 'Shipping'
+                                              ? Colors.yellow
+                                              : order.orderStatusText == 'Received'
+                                              ? Colors.green
+                                              : Colors.red,
+                                          fontWeightDelta: 1,
                                         ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                        height: TSizes.spaceBtwItems),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // status
-                                        Text(
-                                          order.orderStatusText,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                              .apply(
-                                                  color: order.orderStatusText ==
-                                                          'Processing'
-                                                      ? TColors.primaryColor
-                                                      : order.orderStatusText ==
-                                                              'Shipping'
-                                                          ? Colors.yellow
-                                                          : order.orderStatusText ==
-                                                                  'Received'
-                                                              ? Colors.green
-                                                              : Colors.red,
-                                                  fontWeightDelta: 1),
-                                        ),
-                                        const Spacer(),
-                                        // Order Total
-                                        Text(
-                                          '\$${order.totalAmount.toStringAsFixed(1)}',
-                                          style: const TextStyle(
-                                              color: Colors.green),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        '\$${order.totalAmount.toStringAsFixed(1)}',
+                                        style: const TextStyle(color: Colors.green),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      },
-                    );
-                  }),
-                ),
-              ],
-            ),
-
-        ));
+                        ),
+                      );
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

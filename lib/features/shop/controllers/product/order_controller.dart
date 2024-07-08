@@ -22,6 +22,7 @@ import 'package:shoe_admin/utils/popups/full_screen_loader.dart';
 
 class OrderController extends GetxController {
   static OrderController get instance => Get.find();
+  final _db = FirebaseFirestore.instance;
 
   ///variable
   final cartController = Get.put(
@@ -37,8 +38,9 @@ class OrderController extends GetxController {
   final RxList<OrderModel> filteredOrders = <OrderModel>[].obs;
   final searchController = TextEditingController();
   final isLoading = false.obs;
+  var currentStatus = 'All'.obs;
+  final orderStatusOptionsIsStatus = ['All', 'Processing', 'Shipping', 'Received', 'Cancelled'];
 
-  final _db = FirebaseFirestore.instance;
   List<String> orderStatusOptions = [
     'Processing',
     'Shipping',
@@ -83,7 +85,17 @@ class OrderController extends GetxController {
       print('Error in fetchNewOrders: $e');
     }
   }
-
+// Phương thức lọc đơn hàng theo trạng thái
+  void filterOrdersByStatus(String status) {
+    if (status == 'All') {
+      filteredOrders.assignAll(allOrders);
+    } else {
+      filteredOrders.assignAll(
+        allOrders.where((order) => order.orderStatusText == status).toList(),
+      );
+    }
+    currentStatus.value = status;
+  }
   ///
   void updateDateRange() {
     switch (selectedDateRange.value) {

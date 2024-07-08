@@ -133,7 +133,7 @@ class CategoryController extends GetxController{
         // Tạo tham chiếu đến Firebase Storage
         final ref = FirebaseStorage.instance
             .ref()
-            .child('Categories/Images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+            .child('Categories/Images/${DateTime.now().millisecondsSinceEpoch}.png');
 
         // Tải tệp lên Firebase Storage
         final uploadTask = ref.putFile(file);
